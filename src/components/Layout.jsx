@@ -113,15 +113,6 @@ export default function Layout({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
-  // Floating menus never survive navigation (covers back/forward and
-  // programmatic route changes, not just in-menu link clicks).
-  useEffect(() => {
-    setMoreOpen(false);
-    setAccountOpen(false);
-    setMobileOpen(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname]);
-
   // Mobile drawer: Escape/outside dismiss, focus moves in on open and back on close.
   useEffect(() => {
     if (!mobileOpen) return undefined;
