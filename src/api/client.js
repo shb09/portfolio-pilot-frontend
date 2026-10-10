@@ -1,8 +1,10 @@
 import axios from "axios";
 
-/* Same-origin in dev (vite proxy) — set VITE_API_URL in production. */
+/* VITE_API_URL is the bare backend origin (no /api suffix — see .env docs).
+   Same-origin "/api" in dev (vite proxy); origin + "/api" in production. */
+const apiOrigin = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "/api",
+  baseURL: apiOrigin ? `${apiOrigin}/api` : "/api",
 });
 
 api.interceptors.request.use((config) => {
@@ -11,11 +13,14 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-/* Public backend routes live outside /api. Falls back to the API origin
-   (not the frontend origin) so production calls reach the backend. */
+/* Public backend routes carry their own full paths (/api/…, /portfolio/…),
+   so this client needs the bare origin — never the frontend origin. */
 export const pub = axios.create({
-  baseURL: import.meta.env.VITE_PUBLIC_URL || import.meta.env.VITE_API_URL || "",
+  baseURL: import.meta.env.VITE_PUBLIC_URL || apiOrigin || "",
 });
+
+/** Bare backend origin for non-API links (OAuth authorize URL). */
+export const backendOrigin = apiOrigin;
 
 export function apiError(err, fallback = "Something went wrong") {
   return err?.response?.data?.error || err?.response?.data?.details || fallback;

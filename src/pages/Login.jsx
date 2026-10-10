@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-import { api, apiError } from "../api/client";
+import { api, apiError, backendOrigin } from "../api/client";
 import AuthLayout from "../components/AuthLayout";
 
 const OAUTH_MESSAGES = {
@@ -12,7 +12,7 @@ const OAUTH_MESSAGES = {
   unverified: "Google email is not verified. Verify it with Google first.",
 };
 
-const googleStartUrl = `${import.meta.env.VITE_API_URL || ""}/oauth2/authorization/google`;
+const googleStartUrl = `${backendOrigin}/oauth2/authorization/google`;
 
 export default function Login() {
   const { login } = useAuth();
