@@ -1,18 +1,17 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { MailCheck } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { PartyPopper } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
-import { api, apiError } from "../api/client";
+import { apiError } from "../api/client";
 import AuthLayout from "../components/AuthLayout";
 
 export default function Register() {
   const { register } = useAuth();
+  const navigate = useNavigate();
   const [form, setForm] = useState({ username: "", name: "", email: "", password: "" });
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  const [receipt, setReceipt] = useState(null);
-  const [resending, setResending] = useState(false);
-  const [resendNote, setResendNote] = useState("");
+  const [welcome, setWelcome] = useState(null);
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
@@ -21,8 +20,8 @@ export default function Register() {
     setBusy(true);
     setError("");
     try {
-      const data = await register(form);
-      setReceipt({ ...data, email: form.email });
+      const user = await register(form);
+      setWelcome(user);
     } catch (err) {
       setError(apiError(err, "Registration failed"));
     } finally {
@@ -30,35 +29,23 @@ export default function Register() {
     }
   };
 
-  const resend = async () => {
-    setResending(true);
-    setResendNote("");
-    try {
-      const { data } = await api.post("/auth/resend", { email: receipt.email });
-      setReceipt({ ...data, email: receipt.email });
-      setResendNote("Verification email sent again. Check your inbox (and spam).");
-    } catch (err) {
-      setResendNote(apiError(err, "Could not resend right now."));
-    } finally {
-      setResending(false);
-    }
-  };
-
-  if (receipt) {
+  if (welcome) {
     return (
       <AuthLayout
-        title="Check your inbox"
-        subtitle={`Account created for ${form.username || "you"}.`}
+        title={`Welcome, ${welcome.name?.split(" ")[0] || "pilot"}!`}
+        subtitle="Your account is ready — no email confirmation needed."
         footer={<><Link to="/login" className="font-bold underline underline-offset-2" style={{ color: "var(--ink)" }}>Back to login</Link></>}
       >
         <div className="flex items-start gap-3">
-          <span className="icon-tile"><MailCheck size={18} /></span>
+          <span className="icon-tile"><PartyPopper size={18} /></span>
           <div className="text-sm leading-relaxed">
-            <p className="font-bold">Verify your email to activate the account.</p>
-            <p className="mt-1" style={{ color: "var(--muted)" }}>{receipt.message}</p>
-            {resendNote && <p className="mt-2 font-semibold" style={{ color: "var(--ink)" }}>{resendNote}</p>}
-            <button onClick={resend} disabled={resending} className="btn-ghost mt-3 px-3.5 py-2 text-[13px] font-semibold">
-              {resending ? "Sending…" : "Resend verification email"}
+            <p className="font-bold">Account created successfully.</p>
+            <p className="mt-1" style={{ color: "var(--muted)" }}>
+              Signed in as <strong style={{ color: "var(--ink)" }}>{welcome.username}</strong>.
+              Your portfolio starts empty — the dashboard will guide your first steps.
+            </p>
+            <button onClick={() => navigate("/dashboard")} className="btn-brand mt-3 px-4 py-2 text-[13px]">
+              Continue to your dashboard →
             </button>
           </div>
         </div>

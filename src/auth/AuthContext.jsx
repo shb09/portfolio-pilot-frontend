@@ -44,10 +44,13 @@ export function AuthProvider({ children }) {
     return data.user;
   };
 
-  /** Registration never authenticates: returns the pending receipt. */
+  /** Registration creates an active session immediately (no verification gate). */
   const register = async (payload) => {
     const { data } = await api.post("/auth/register", payload);
-    return data;
+    localStorage.setItem("pp_token", data.token);
+    localStorage.setItem("pp_user", JSON.stringify(data.user));
+    setUser(data.user);
+    return data.user;
   };
 
   const logout = () => {
