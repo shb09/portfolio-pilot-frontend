@@ -36,6 +36,8 @@ export default function AmbientGlow() {
     const onMove = (e) => {
       tx = e.clientX - 230;
       ty = e.clientY - 230;
+      const hot = !!(e.target instanceof Element && e.target.closest("a, button, [role='button']"));
+      el.classList.toggle("hot", hot);
       if (!running) {
         running = true;
         raf = requestAnimationFrame(tick);

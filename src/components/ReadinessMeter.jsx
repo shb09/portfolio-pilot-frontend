@@ -13,14 +13,15 @@ export default function ReadinessMeter({ score, breakdown }) {
         <p className="eyebrow pb-1.5">Ready<br />{done}/8 done</p>
       </div>
       <div className="mt-3 flex gap-1" aria-hidden="true">
-        {(breakdown || []).map((b) => (
+        {(breakdown || []).map((b, i) => (
           <span
             key={b.section}
             title={`${b.label}: ${b.earned}/${b.weight}`}
-            className="h-3 flex-1 rounded-[2px] border-[1.5px]"
+            className="meter-seg h-3 flex-1 rounded-[2px] border-[1.5px]"
             style={{
               background: b.done ? "var(--lime)" : b.earned > 0 ? "var(--ring-track)" : "transparent",
               borderColor: "var(--line-strong)",
+              animationDelay: `${i * 70}ms`,
             }}
           />
         ))}

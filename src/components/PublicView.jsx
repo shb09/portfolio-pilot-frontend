@@ -106,7 +106,7 @@ export default function PublicView({ data, onEvent }) {
           <Rule index="03">Selected work</Rule>
           <div className="divide-y-2" style={{ borderColor: "var(--line-strong)" }}>
             {projects.map((p, i) => (
-              <article key={p.id} className="grid gap-1 py-5 first:pt-0 last:pb-0 sm:grid-cols-[48px_1fr_auto]">
+              <article key={p.id} className="sweep grid gap-1 py-5 first:pt-0 last:pb-0 sm:grid-cols-[48px_1fr_auto]">
                 <span className="display text-2xl tabular-nums" style={{ color: "var(--surface-tint)", WebkitTextStroke: "1.5px var(--ink)" }} aria-hidden="true">
                   {String(i + 1).padStart(2, "0")}
                 </span>

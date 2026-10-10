@@ -381,7 +381,7 @@ select.input option {
   color: var(--muted);
   font-weight: 600;
   font-size: 0.83rem;
-  transition: color 0.1s ease, background 0.1s ease;
+  transition: color 0.12s ease, background 0.12s ease, border-color 0.12s ease, transform 0.12s ease;
   border-bottom: 2px solid transparent;
   white-space: nowrap;
 }
@@ -613,6 +613,78 @@ textarea:focus-visible {
   }
   .aurora::after {
     animation: drift 52s ease-in-out infinite alternate-reverse;
+  }
+}
+/* Cursor follower: tiny lime dot + trailing ink ring. Decorative only —
+   the native cursor is untouched, input is never intercepted. */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 70;
+  border-radius: 9999px;
+}
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  background: var(--lime);
+  border: 1.5px solid var(--line-strong);
+}
+.cursor-ring {
+  width: 30px;
+  height: 30px;
+  margin: -15px 0 0 -15px;
+  border: 1.5px solid var(--line-strong);
+  transition: scale 0.18s ease;
+  opacity: 0.75;
+}
+
+/* Ambient glow heats up slightly over interactive elements. */
+.ambient-glow {
+  transition: filter 0.3s ease;
+}
+.ambient-glow.hot {
+  filter: saturate(1.35) brightness(1.06);
+}
+
+/* Readiness segments pop in staggered on mount (value unaffected). */
+.meter-seg {
+  animation: seg-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+@keyframes seg-in {
+  from {
+    transform: scaleY(0.2);
+    opacity: 0;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* Light sweep for showcase cards (hover-capable pointers only). */
+.sweep {
+  position: relative;
+  overflow: hidden;
+}
+.sweep::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 42%, rgba(215, 255, 63, 0.22) 50%, transparent 58%);
+  transform: translateX(-130%);
+  transition: transform 0.7s ease;
+  pointer-events: none;
+}
+.sweep:hover::after {
+  transform: translateX(130%);
+}
+@media (hover: none) {
+  .sweep::after {
+    display: none;
   }
 }
 } /* end @layer components */

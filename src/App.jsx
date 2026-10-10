@@ -3,6 +3,8 @@ import { useAuth } from "./auth/AuthContext";
 import Layout from "./components/Layout";
 import Aurora from "./components/Aurora";
 import AmbientGlow from "./components/AmbientGlow";
+import CursorFollower from "./components/CursorFollower";
+import MagneticButtons from "./components/MagneticButtons";
 import Ripple from "./components/Ripple";
 import CrudPage from "./components/CrudPage";
 import { MODULES } from "./config/modules";
@@ -57,6 +59,8 @@ export default function App() {
   return (
     <>
       <AmbientGlow />
+      <CursorFollower />
+      <MagneticButtons />
       <Ripple />
       <Routes>
       <Route path="/" element={<Landing />} />
