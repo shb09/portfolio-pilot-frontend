@@ -11,9 +11,10 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-/* Public backend routes live outside /api. */
+/* Public backend routes live outside /api. Falls back to the API origin
+   (not the frontend origin) so production calls reach the backend. */
 export const pub = axios.create({
-  baseURL: import.meta.env.VITE_PUBLIC_URL || "",
+  baseURL: import.meta.env.VITE_PUBLIC_URL || import.meta.env.VITE_API_URL || "",
 });
 
 export function apiError(err, fallback = "Something went wrong") {

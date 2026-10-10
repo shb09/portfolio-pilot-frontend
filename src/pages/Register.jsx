@@ -81,7 +81,7 @@ export default function Register() {
         <label className="label" htmlFor="username">Username</label>
         <input
           id="username" className="input mt-1" required minLength={3} maxLength={30} autoComplete="username"
-          pattern="^[a-z0-9._-]{3,30}$" title="3-30 chars: lowercase letters, digits, dot, underscore, hyphen"
+          pattern="^[a-z0-9._\-]{3,30}$" title="3-30 chars: lowercase letters, digits, dot, underscore, hyphen"
           value={form.username} onChange={set("username")} placeholder="asha-01"
           aria-describedby="username-help"
         />

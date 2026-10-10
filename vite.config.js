@@ -7,8 +7,18 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
-      // Dev: same-origin calls, no CORS headaches.
-      '/api': 'http://localhost:8080',
+      // Dev: same-origin calls, no CORS headaches. The Origin header is
+      // stripped so the backend never sees a foreign dev-server origin —
+      // the dev UI works on ANY localhost port, not just :5173.
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq) => {
+            proxyReq.removeHeader('origin');
+          });
+        },
+      },
       // /portfolio serves BOTH the public API and the SPA page. Browser
       // navigations (Accept: text/html) must get index.html; axios JSON
       // calls still proxy to the backend.
