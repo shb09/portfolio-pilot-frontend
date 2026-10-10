@@ -1,7 +1,16 @@
 import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { api, apiError } from "../api/client";
 import PublicView from "../components/PublicView";
 import Toast from "../components/Toast";
+
+function isEmptyPortfolio(d) {
+  if (!d) return true;
+  return !d.about && !d.headline
+    && !(d.skills || []).length && !(d.projects || []).length
+    && !(d.experience || []).length && !(d.education || []).length
+    && !(d.certifications || []).length && !(d.achievements || []).length;
+}
 
 export default function Preview() {
   const [data, setData] = useState(null);
@@ -56,7 +65,7 @@ export default function Preview() {
       </p>
 
       {/* Floating controls — offset below the sticky header (z-20) */}
-      <div className="glass-pop card sticky top-[68px] z-10 mt-5 p-4">
+      <div className="liquid-glass card sticky top-[68px] z-10 mt-5 p-4">
         <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
           <div>
             <label className="label" htmlFor="username">Public username *</label>
@@ -75,9 +84,15 @@ export default function Preview() {
         </div>
         {error && <p role="alert" className="mt-2 text-sm font-medium" style={{ color: "var(--danger)" }}>{error}</p>}
         <div className="mt-2 flex flex-wrap items-center gap-3 text-sm">
-          <span className="chip px-3 py-1 font-semibold" style={{ color: meta.published ? "var(--brand)" : "var(--muted)" }}>
-            {meta.published ? "● Live" : "○ Draft"}
-          </span>
+          {meta.published ? (
+            <span className="liquid-lime inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-extrabold uppercase tracking-wide">
+              <span className="pulse-dot" style={{ color: "#171717" }} aria-hidden="true" /> Live
+            </span>
+          ) : (
+            <span className="chip inline-flex items-center gap-2 px-3 py-1 text-xs font-bold uppercase tracking-wide" style={{ color: "var(--muted)" }}>
+              <span className="pulse-dot" aria-hidden="true" /> Draft
+            </span>
+          )}
           {meta.published && meta.username && (
             <>
               <a href={publicUrl} target="_blank" rel="noreferrer" className="font-semibold underline" style={{ color: "var(--brand)" }}>{publicUrl} ↗</a>
@@ -88,7 +103,28 @@ export default function Preview() {
       </div>
 
       <div className="mt-6">
-        {data ? <PublicView data={data} onEvent={null} /> : <div className="skeleton h-96" aria-label="Loading preview" />}
+        {!data ? (
+          <div className="skeleton h-96" aria-label="Loading preview" />
+        ) : isEmptyPortfolio(data) ? (
+          <div className="solid card mx-auto max-w-md p-8 text-center">
+            <p className="eyebrow">Nothing to preview yet</p>
+            <p className="mt-2 text-sm" style={{ color: "var(--muted)" }}>
+              Add your profile, skills, or a project first — then come back to preview and publish.
+            </p>
+          </div>
+        ) : (
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`${meta.username || "draft"}-${meta.published ? "live" : "draft"}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.25 }}
+            >
+              <PublicView data={data} onEvent={null} />
+            </motion.div>
+          </AnimatePresence>
+        )}
       </div>
       <Toast message={toast} onDone={() => setToast("")} />
     </div>

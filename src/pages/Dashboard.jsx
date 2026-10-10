@@ -114,7 +114,7 @@ export default function Dashboard() {
           </Link>
         </StaggerItem>
 
-        <StaggerItem className="solid card flex flex-col p-5 lg:col-span-3">
+        <StaggerItem className="liquid-glass card flex flex-col p-5 lg:col-span-3">
           <p className="eyebrow">Publication</p>
           <p className="mt-1.5 text-lg font-extrabold tracking-tight">
             {portfolio?.published ? "LIVE" : "DRAFT"}

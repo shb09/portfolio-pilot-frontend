@@ -208,7 +208,7 @@ export default function Layout({ children }) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 4 }}
                     transition={{ duration: 0.14 }}
-                    className="glass-pop card absolute left-0 top-full z-30 mt-1.5 w-52 p-1.5"
+                    className="liquid-glass card absolute left-0 top-full z-30 mt-1.5 w-52 p-1.5"
                     role="menu"
                   >
                     {MORE.map(([name, to, Icon]) => (
@@ -274,7 +274,7 @@ export default function Layout({ children }) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 4 }}
                     transition={{ duration: 0.14 }}
-                    className="glass-pop card absolute right-0 top-full z-30 mt-1.5 w-60 p-1.5"
+                    className="liquid-glass card absolute right-0 top-full z-30 mt-1.5 w-60 p-1.5"
                     role="menu"
                   >
                     <p className="truncate px-2.5 pb-1 pt-1.5 text-xs font-bold">{user?.name}</p>
@@ -330,8 +330,8 @@ export default function Layout({ children }) {
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.18 }}
-              className="overflow-hidden border-t-2 lg:hidden"
-              style={{ borderColor: "var(--line-strong)", background: "var(--nav)" }}
+              className="drawer-glass overflow-hidden border-t-2 lg:hidden"
+              style={{ borderColor: "var(--line-strong)" }}
               aria-label="Primary"
             >
               <div className="grid gap-0.5 px-3.5 py-3">

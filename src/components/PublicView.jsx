@@ -1,4 +1,5 @@
 import { ArrowUpRight, Download, MapPin } from "lucide-react";
+import { Reveal } from "./Reveal";
 import { pub } from "../api/client";
 
 function fire(username, eventType, projectId) {
@@ -37,8 +38,9 @@ export default function PublicView({ data, onEvent }) {
 
   return (
     <article>
-      {/* Hero */}
-      <header className="border-b-2 pb-8" style={{ borderColor: "var(--line-strong)" }}>
+      {/* Hero with layered light */}
+      <Reveal>
+      <header className="hero-glow border-b-2 pb-8" style={{ borderColor: "var(--line-strong)" }}>
         <div className="flex items-center gap-4">
           <div
             className="flex h-16 w-16 items-center justify-center rounded-[6px] text-3xl font-extrabold"
@@ -74,15 +76,19 @@ export default function PublicView({ data, onEvent }) {
           )}
         </div>
       </header>
+      </Reveal>
 
       {data.about && (
+        <Reveal>
         <section className="grid gap-4 py-8 lg:grid-cols-[200px_1fr]" aria-label="About">
           <Rule index="01">About</Rule>
           <p className="max-w-2xl whitespace-pre-wrap text-lg font-medium leading-relaxed">{data.about}</p>
         </section>
+        </Reveal>
       )}
 
       {data.skills?.length > 0 && (
+        <Reveal>
         <section className="grid gap-4 border-t-2 py-8 lg:grid-cols-[200px_1fr]" style={{ borderColor: "var(--line-strong)" }} aria-label="Skills">
           <Rule index="02">Expertise</Rule>
           <ul className="flex flex-wrap gap-1.5">
@@ -99,9 +105,11 @@ export default function PublicView({ data, onEvent }) {
             ))}
           </ul>
         </section>
+        </Reveal>
       )}
 
       {projects.length > 0 && (
+        <Reveal>
         <section className="grid gap-4 border-t-2 py-8 lg:grid-cols-[200px_1fr]" style={{ borderColor: "var(--line-strong)" }} aria-label="Projects">
           <Rule index="03">Selected work</Rule>
           <div className="divide-y-2" style={{ borderColor: "var(--line-strong)" }}>
@@ -132,9 +140,11 @@ export default function PublicView({ data, onEvent }) {
             ))}
           </div>
         </section>
+        </Reveal>
       )}
 
       {data.experience?.length > 0 && (
+        <Reveal>
         <section className="grid gap-4 border-t-2 py-8 lg:grid-cols-[200px_1fr]" style={{ borderColor: "var(--line-strong)" }} aria-label="Experience">
           <Rule index="04">Experience</Rule>
           <div className="space-y-6">
@@ -152,9 +162,11 @@ export default function PublicView({ data, onEvent }) {
             ))}
           </div>
         </section>
+        </Reveal>
       )}
 
       {data.education?.length > 0 && (
+        <Reveal>
         <section className="grid gap-4 border-t-2 py-8 lg:grid-cols-[200px_1fr]" style={{ borderColor: "var(--line-strong)" }} aria-label="Education">
           <Rule index="05">Education</Rule>
           <div className="space-y-4">
@@ -174,9 +186,11 @@ export default function PublicView({ data, onEvent }) {
             ))}
           </div>
         </section>
+        </Reveal>
       )}
 
       {data.certifications?.length > 0 && (
+        <Reveal>
         <section className="grid gap-4 border-t-2 py-8 lg:grid-cols-[200px_1fr]" style={{ borderColor: "var(--line-strong)" }} aria-label="Certifications">
           <Rule index="06">Certified</Rule>
           <ul className="divide-y" style={{ borderColor: "var(--line)" }}>
@@ -190,9 +204,11 @@ export default function PublicView({ data, onEvent }) {
             ))}
           </ul>
         </section>
+        </Reveal>
       )}
 
       {data.achievements?.length > 0 && (
+        <Reveal>
         <section className="grid gap-4 border-t-2 py-8 lg:grid-cols-[200px_1fr]" style={{ borderColor: "var(--line-strong)" }} aria-label="Achievements">
           <Rule index="07">Recognition</Rule>
           <div className="grid gap-x-8 gap-y-4 md:grid-cols-2">
@@ -208,6 +224,7 @@ export default function PublicView({ data, onEvent }) {
             ))}
           </div>
         </section>
+        </Reveal>
       )}
 
       <footer className="border-t-2 py-5 text-center text-[11px] font-bold uppercase tracking-[0.14em]" style={{ borderColor: "var(--line-strong)", color: "var(--muted)" }}>

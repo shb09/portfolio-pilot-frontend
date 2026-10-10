@@ -169,22 +169,71 @@ h1, h2, h3 {
   pointer-events: none;
 }
 .aurora span {
-  display: none;
+  position: absolute;
+  width: 34vmax;
+  height: 34vmax;
+  border-radius: 58% 42% 55% 45% / 52% 58% 42% 48%;
+  filter: blur(90px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.aurora span:nth-child(1) {
+  left: -10vmax;
+  top: -12vmax;
+  background: radial-gradient(circle, rgba(215, 255, 63, 0.20), transparent 65%);
+}
+.aurora span:nth-child(2) {
+  right: -12vmax;
+  top: 22vh;
+  background: radial-gradient(circle, rgba(232, 233, 255, 0.85), transparent 65%);
+}
+.aurora span:nth-child(3) {
+  left: 28vw;
+  bottom: -16vmax;
+  background: radial-gradient(circle, rgba(255, 107, 74, 0.10), transparent 65%);
 }
 [data-theme="carbon"] .aurora {
-  opacity: 0.16;
+  opacity: 0.5;
+}
+[data-theme="carbon"] .aurora span:nth-child(1) {
+  background: radial-gradient(circle, rgba(215, 255, 63, 0.12), transparent 65%);
+}
+[data-theme="carbon"] .aurora span:nth-child(2) {
+  background: radial-gradient(circle, rgba(41, 42, 75, 0.9), transparent 65%);
+}
+[data-theme="carbon"] .aurora span:nth-child(3) {
+  background: radial-gradient(circle, rgba(255, 107, 74, 0.08), transparent 65%);
 }
 @media (prefers-reduced-motion: no-preference) {
-  .aurora {
-    animation: none;
+  .aurora span {
+    animation: drift 46s ease-in-out infinite alternate, morph 30s ease-in-out infinite alternate;
+  }
+  .aurora span:nth-child(2) {
+    animation-delay: -14s, -9s;
+    animation-duration: 58s, 36s;
+  }
+  .aurora span:nth-child(3) {
+    animation-delay: -28s, -21s;
+    animation-duration: 64s, 42s;
   }
 }
 @keyframes drift {
   from {
-    transform: none;
+    transform: translate(0, 0) scale(1);
   }
   to {
-    transform: none;
+    transform: translate(4vmax, 3vmax) scale(1.08);
+  }
+}
+@keyframes morph {
+  0% {
+    border-radius: 58% 42% 55% 45% / 52% 58% 42% 48%;
+  }
+  50% {
+    border-radius: 45% 55% 42% 58% / 58% 42% 58% 42%;
+  }
+  100% {
+    border-radius: 52% 48% 60% 40% / 45% 55% 45% 55%;
   }
 }
 
@@ -211,6 +260,99 @@ h1, h2, h3 {
 .blur-backdrop {
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
+}
+/* Signature liquid glass: translucent surface, layered light refraction,
+   specular top edge, suspended shadow. Floating elements only. */
+.liquid-glass {
+  position: relative;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.30), rgba(255, 255, 255, 0.03) 42%, rgba(215, 255, 63, 0.10) 78%, rgba(255, 255, 255, 0.07)),
+    color-mix(in srgb, var(--surface-solid) 74%, transparent);
+  backdrop-filter: blur(20px) saturate(1.35);
+  -webkit-backdrop-filter: blur(20px) saturate(1.35);
+  border: 1.5px solid color-mix(in srgb, var(--line-strong) 58%, transparent);
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -1px 0 rgba(23, 23, 23, 0.05);
+}
+[data-theme="carbon"] .liquid-glass {
+  background:
+    linear-gradient(135deg, rgba(244, 241, 232, 0.10), rgba(244, 241, 232, 0.01) 45%, rgba(215, 255, 63, 0.07) 80%, transparent),
+    color-mix(in srgb, var(--surface-solid) 70%, transparent);
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(244, 241, 232, 0.14);
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .liquid-glass {
+    background: var(--surface-solid);
+  }
+}
+/* Tinted liquid glass for status pills and selection marks. */
+.liquid-lime {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.05) 55%, rgba(23, 23, 23, 0.06)),
+    color-mix(in srgb, var(--lime) 82%, transparent);
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  border: 1.5px solid var(--line-strong);
+  color: #171717;
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .liquid-lime {
+    background: var(--lime);
+  }
+}
+/* Mobile drawer: translucent nav surface, readable at all sizes. */
+.drawer-glass {
+  background: color-mix(in srgb, var(--nav) 90%, transparent);
+  backdrop-filter: blur(16px) saturate(1.25);
+  -webkit-backdrop-filter: blur(16px) saturate(1.25);
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .drawer-glass {
+    background: var(--nav);
+  }
+}
+/* Small pulsing status dot (static when reduced motion is on). */
+.pulse-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: currentColor;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pulse-dot {
+    animation: pulse-soft 2.2s ease-in-out infinite;
+  }
+}
+@keyframes pulse-soft {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.82);
+  }
+}
+/* Layered hero light behind portfolio monograms and headlines. */
+.hero-glow {
+  position: relative;
+}
+.hero-glow::before {
+  content: "";
+  position: absolute;
+  inset: -12% -8% auto -8%;
+  height: 115%;
+  background: radial-gradient(closest-side, rgba(215, 255, 63, 0.28), transparent 72%);
+  filter: blur(30px);
+  pointer-events: none;
+  z-index: 0;
+}
+[data-theme="carbon"] .hero-glow::before {
+  background: radial-gradient(closest-side, rgba(215, 255, 63, 0.16), transparent 72%);
+}
+.hero-glow > * {
+  position: relative;
+  z-index: 1;
 }
 .solid {
   background: var(--surface-solid);
@@ -539,6 +681,22 @@ textarea:focus-visible {
 [data-theme="carbon"] .ambient-glow {
   background: radial-gradient(circle, rgba(215, 255, 63, 0.28), transparent 62%);
 }
+/* Specular core: smaller, brighter heart of the glow that leads slightly. */
+.ambient-core {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 150px;
+  height: 150px;
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.5), transparent 60%);
+}
+[data-theme="carbon"] .ambient-core {
+  background: radial-gradient(circle, rgba(244, 241, 232, 0.14), transparent 60%);
+}
 
 /* Tap ripple: fixed dot, expands and fades, never intercepts input.
    Ink-toned so it reads on paper, lime buttons, and dark surfaces alike. */
@@ -640,6 +798,31 @@ textarea:focus-visible {
   border: 1.5px solid var(--line-strong);
   transition: scale 0.18s ease;
   opacity: 0.75;
+}
+/* Translucent optical halo: glass ring + specular glint, trails slowest. */
+.cursor-halo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 190px;
+  height: 190px;
+  margin: -95px 0 0 -95px;
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 69;
+  border: 1px solid color-mix(in srgb, var(--line-strong) 35%, transparent);
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.5), transparent 42%),
+    radial-gradient(circle, rgba(215, 255, 63, 0.13), transparent 66%);
+  backdrop-filter: blur(7px) saturate(1.15);
+  -webkit-backdrop-filter: blur(7px) saturate(1.15);
+  transition: scale 0.25s ease, opacity 0.25s ease;
+  opacity: 0.9;
+}
+[data-theme="carbon"] .cursor-halo {
+  background:
+    radial-gradient(circle at 32% 28%, rgba(244, 241, 232, 0.16), transparent 42%),
+    radial-gradient(circle, rgba(215, 255, 63, 0.10), transparent 66%);
 }
 
 /* Ambient glow heats up slightly over interactive elements. */

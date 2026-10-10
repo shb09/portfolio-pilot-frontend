@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 export default function CursorFollower() {
   const dotRef = useRef(null);
   const ringRef = useRef(null);
+  const haloRef = useRef(null);
   // Evaluated once: fine pointers without reduced motion only.
   const [on] = useState(
     () =>
@@ -21,7 +22,8 @@ export default function CursorFollower() {
     if (!on) return undefined;
     const dot = dotRef.current;
     const ring = ringRef.current;
-    if (!dot || !ring) return undefined;
+    const halo = haloRef.current;
+    if (!dot || !ring || !halo) return undefined;
 
     let raf = 0;
     let mx = -100;
@@ -30,15 +32,22 @@ export default function CursorFollower() {
     let dy = my;
     let rx = mx;
     let ry = my;
+    let hx = mx;
+    let hy = my;
     let hot = false;
+    let glassHot = false;
 
     const tick = () => {
       dx += (mx - dx) * 0.4;
       dy += (my - dy) * 0.4;
       rx += (mx - rx) * 0.16;
       ry += (my - ry) * 0.16;
+      hx += (mx - hx) * 0.07;
+      hy += (my - hy) * 0.07;
       dot.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px)`;
       ring.style.transform = `translate(${rx.toFixed(1)}px, ${ry.toFixed(1)}px) scale(${hot ? 1.5 : 1})`;
+      halo.style.transform = `translate(${hx.toFixed(1)}px, ${hy.toFixed(1)}px) scale(${glassHot ? 1.25 : 1})`;
+      halo.style.opacity = glassHot ? "1" : "0.9";
       raf = requestAnimationFrame(tick);
     };
     const onMove = (e) => {
@@ -46,7 +55,9 @@ export default function CursorFollower() {
       my = e.clientY;
     };
     const onOver = (e) => {
-      hot = !!(e.target instanceof Element && e.target.closest("a, button, [role='button'], input, select, textarea"));
+      const t = e.target instanceof Element ? e.target.closest("a, button, [role='button'], input, select, textarea") : null;
+      hot = !!t;
+      glassHot = !!(e.target instanceof Element && e.target.closest(".liquid-glass, .glass-pop"));
     };
     raf = requestAnimationFrame(tick);
     window.addEventListener("pointermove", onMove, { passive: true });
@@ -61,6 +72,7 @@ export default function CursorFollower() {
   if (!on) return null;
   return (
     <>
+      <div ref={haloRef} className="cursor-halo" aria-hidden="true" />
       <div ref={ringRef} className="cursor-ring" aria-hidden="true" />
       <div ref={dotRef} className="cursor-dot" aria-hidden="true" />
     </>
