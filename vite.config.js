@@ -6,6 +6,10 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
+    // Frontend runs on :5173 only — matches the backend's default CORS
+    // origin. strictPort fails fast instead of silently hopping ports.
+    port: 5173,
+    strictPort: true,
     proxy: {
       // Dev: same-origin calls, no CORS headaches. The Origin header is
       // stripped so the backend never sees a foreign dev-server origin —
