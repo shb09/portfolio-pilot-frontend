@@ -24,6 +24,9 @@ import PublicPortfolio from "./pages/PublicPortfolio";
 import HoldingsPage from "./pages/HoldingsPage";
 import PricesPage from "./pages/PricesPage";
 import AnalysisPage from "./pages/AnalysisPage";
+import PortfoliosPage from "./pages/PortfoliosPage";
+import GlossaryPage from "./pages/GlossaryPage";
+import WalkthroughPage from "./pages/WalkthroughPage";
 
 function Guard({ children }) {
   const { user, ready } = useAuth();
@@ -84,10 +87,12 @@ export default function App() {
       <Route path="/preview" element={<Guard><Preview /></Guard>} />
       <Route path="/analytics" element={<Guard><AnalyticsPage /></Guard>} />
       <Route path="/settings" element={<Guard><Settings /></Guard>} />
-      <Route path="/portfolios" element={crud("finPortfolios")} />
+      <Route path="/portfolios" element={<Guard><PortfoliosPage /></Guard>} />
       <Route path="/portfolios/:id" element={<Guard><HoldingsPage /></Guard>} />
       <Route path="/prices" element={<Guard><PricesPage /></Guard>} />
       <Route path="/analysis" element={<Guard><AnalysisPage /></Guard>} />
+      <Route path="/learn" element={<Guard><GlossaryPage /></Guard>} />
+      <Route path="/walkthrough" element={<Guard><WalkthroughPage /></Guard>} />
       <Route path="/portfolio/:username" element={<PublicPortfolio />} />
       <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

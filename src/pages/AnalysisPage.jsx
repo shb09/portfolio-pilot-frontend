@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Activity, Crosshair, Gauge, Scale } from "lucide-react";
 import { api, apiError } from "../api/client";
+import FinancialTermHelp from "../components/FinancialTermHelp";
 import Stat from "../components/Stat";
 
 function fmt(value, digits = 2) {
@@ -14,11 +15,11 @@ function fmtPct(value, digits = 2) {
   return `${(Number(value) * 100).toFixed(digits)}%`;
 }
 
-function Metric({ label, value, hint }) {
+function Metric({ label, value, hint, termId, context }) {
   return (
     <div className="solid card p-4">
       <p className="display text-[1.7rem] tabular-nums">{value}</p>
-      <p className="eyebrow mt-1" style={{ fontSize: "0.6rem" }}>{label}</p>
+      <p className="eyebrow mt-1" style={{ fontSize: "0.6rem" }}>{label} {termId && <FinancialTermHelp termId={termId} context={context} />}</p>
       {hint && <p className="mt-1 text-xs" style={{ color: "var(--muted)" }}>{hint}</p>}
     </div>
   );
@@ -26,6 +27,7 @@ function Metric({ label, value, hint }) {
 
 /** Quantitative report for the selected portfolio — all backend-computed. */
 export default function AnalysisPage() {
+  const [params] = useSearchParams();
   const [portfolios, setPortfolios] = useState([]);
   const [selected, setSelected] = useState("");
   const [report, setReport] = useState(null);
@@ -36,9 +38,13 @@ export default function AnalysisPage() {
     api.get("/fin-portfolios")
       .then((res) => {
         setPortfolios(res.data);
-        if (res.data.length > 0) setSelected(String(res.data[0].id));
+        if (res.data.length > 0) {
+          const wanted = params.get("portfolio");
+          setSelected(res.data.some((p) => String(p.id) === String(wanted)) ? String(wanted) : String(res.data[0].id));
+        }
       })
       .catch((err) => setError(apiError(err, "Could not load portfolios")));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -71,7 +77,8 @@ export default function AnalysisPage() {
       <p className="mt-1 max-w-xl text-[13px]" style={{ color: "var(--muted)" }}>
         Simple daily returns, 252-day annualization, sample volatility, Sharpe at zero
         risk-free rate, maximum drawdown, HHI concentration, benchmark comparison on
-        aligned dates. Nulls always carry a reason — never NaN.
+        aligned dates. Nulls always carry a reason — never NaN.{" "}
+        <Link to="/learn" className="font-bold underline underline-offset-2" style={{ color: "var(--ink)" }}>Learn these metrics</Link>
       </p>
 
       {error && (
@@ -91,21 +98,29 @@ export default function AnalysisPage() {
 
           <h2 className="mt-5 text-sm font-extrabold">Valuation {report.valuation.asOf && <span style={{ color: "var(--muted)" }}>as of {report.valuation.asOf}</span>}</h2>
           <div className="mt-2 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-            <Metric label="Total value" value={fmt(report.valuation.totalValue)} />
-            <Metric label="Positions" value={String(report.valuation.positions.length)} />
-            <Metric label="Cumulative" value={fmtPct(r?.cumulativeReturn)} hint={r?.reason || `${r?.observations ?? 0} observations`} />
-            <Metric label="Max drawdown" value={fmtPct(r?.maxDrawdown)} />
+            <Metric label="Total value" value={fmt(report.valuation.totalValue)} termId="holding"
+              context={`${report.valuation.positions.length} position(s) valued at latest prices. Missing prices: ${report.valuation.missingPrices?.length ? report.valuation.missingPrices.join(", ") : "none"}.`} />
+            <Metric label="Positions" value={String(report.valuation.positions.length)} termId="holding"
+              context="One holding counts once, however many units it contains." />
+            <Metric label="Cumulative" value={fmtPct(r?.cumulativeReturn)} hint={r?.reason || `${r?.observations ?? 0} observations`} termId="cumulative-return"
+              context={r?.cumulativeReturn == null ? (r?.reason || "Needs at least 2 valued dates.") : `Last ÷ first − 1 from ${r.startDate} to ${r.endDate} across ${r.observations} return observations.`} />
+            <Metric label="Max drawdown" value={fmtPct(r?.maxDrawdown)} termId="max-drawdown"
+              context={r?.maxDrawdown == null ? (r?.reason || "Needs at least 2 valued dates.") : `Largest peak-to-trough fall of the value series between ${r.startDate} and ${r.endDate}.`} />
           </div>
 
           <h2 className="mt-5 text-sm font-extrabold">Risk & return</h2>
           <div className="mt-2 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-            <Metric label="Annualized return" value={fmtPct(r?.annualizedReturn)} />
-            <Metric label="Volatility (ann.)" value={fmtPct(r?.annualizedVolatility)} />
-            <Metric label="Sharpe (rf 0)" value={fmt(r?.sharpeRatio)} />
-            <Metric label="HHI concentration" value={fmt(report.allocation.hhi, 4)} hint={report.allocation.hhiBand} />
+            <Metric label="Annualized return" value={fmtPct(r?.annualizedReturn)} termId="annualized-return"
+              context={r?.annualizedReturn == null ? (r?.reason || "Needs at least 1 return observation.") : `(1 + cumulative)^(252 ÷ ${r.observations}) − 1 over ${r.observations} observations.`} />
+            <Metric label="Volatility (ann.)" value={fmtPct(r?.annualizedVolatility)} termId="volatility"
+              context={r?.annualizedVolatility == null ? (r?.reason || "Needs at least 2 return observations.") : `Sample deviation of period returns × √252 over ${r.observations} observations.`} />
+            <Metric label="Sharpe (rf 0)" value={fmt(r?.sharpeRatio)} termId="sharpe"
+              context={r?.sharpeRatio == null ? (r?.reason || "Unavailable when volatility is missing or zero — a flat series has no meaningful Sharpe.") : `Average period return × 252 ÷ annualized volatility, with risk-free rate fixed at zero.`} />
+            <Metric label="HHI concentration" value={fmt(report.allocation.hhi, 4)} hint={report.allocation.hhiBand} termId="hhi"
+              context={report.allocation.hhi == null ? "No valued positions yet — HHI needs position weights." : `Squared value-weights summed: ${Object.entries(report.allocation.weights).sort((a, b) => b[1] - a[1]).map(([s, w]) => `${s} ${Math.round(w * 100)}%`).join(" · ")}. Band “${report.allocation.hhiBand}” is descriptive, not advice.`} />
           </div>
 
-          <h2 className="mt-5 text-sm font-extrabold">Positions</h2>
+          <h2 className="mt-5 text-sm font-extrabold">Positions <FinancialTermHelp termId="holding" context="Each row is one holding: symbol, units owned, latest price, and its share of total value." /></h2>
           {report.valuation.positions.length === 0 ? (
             <p className="mt-1 text-[13px]" style={{ color: "var(--muted)" }}>
               No holdings yet. <Link to={selected ? `/portfolios/${selected}` : "/portfolios"} className="font-bold underline" style={{ color: "var(--ink)" }}>Add holdings →</Link>
@@ -113,7 +128,7 @@ export default function AnalysisPage() {
           ) : (
             <div className="solid card mt-2 overflow-x-auto">
               <table className="table-soft">
-                <thead><tr><th scope="col">Symbol</th><th scope="col">Qty</th><th scope="col">Last</th><th scope="col">Value</th><th scope="col">Weight</th></tr></thead>
+                <thead><tr><th scope="col">Symbol</th><th scope="col">Qty</th><th scope="col">Last</th><th scope="col">Value</th><th scope="col">Weight <FinancialTermHelp termId="portfolio" context="Share of total value at latest prices. These weights feed the HHI concentration figure." /></th></tr></thead>
                 <tbody>
                   {report.valuation.positions.map((p) => (
                     <tr key={p.symbol}>
@@ -129,7 +144,8 @@ export default function AnalysisPage() {
             </div>
           )}
 
-          <h2 className="mt-5 text-sm font-extrabold">Benchmark</h2>
+          <h2 className="mt-5 text-sm font-extrabold">Benchmark <FinancialTermHelp termId="benchmark-comparison"
+            context={b?.symbol == null ? (b?.reason || "Set a benchmark symbol on the portfolio to enable comparison.") : b?.activeReturn == null ? (b?.reason || `Only ${b?.alignedObservations ?? 0} shared observations — import overlapping history.`) : `Over ${b.alignedObservations} shared observations, this portfolio sits ${b.activeReturn >= 0 ? "ahead of" : "behind"} ${b.symbol} by ${Math.abs(b.activeReturn * 100).toFixed(2)} percentage points. Past gaps do not predict future ones.`} /></h2>
           <div className="solid card mt-2 p-4">
             {b?.symbol == null ? (
               <p className="text-[13px]" style={{ color: "var(--muted)" }}>

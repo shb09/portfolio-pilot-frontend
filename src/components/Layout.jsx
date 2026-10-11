@@ -2,11 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  ChevronDown, LayoutDashboard, LineChart, LogOut, Menu, Moon,
+  BookOpen, ChevronDown, LayoutDashboard, LineChart, LogOut, Menu, Moon,
   Settings as SettingsIcon, ShieldCheck, Sun, TrendingUp, X,
 } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import { useTheme } from "../theme/ThemeContext";
+import Tour from "./Tour";
 
 /* Financial workspace navigation. Legacy career pages remain mounted as
    routes for direct access, but are deliberately unlinked from this menu. */
@@ -89,7 +90,7 @@ export default function Layout({ children }) {
     navigate("/login");
   };
 
-  const all = [...MAIN, ["Settings", "/settings", SettingsIcon], ["Admin", "/admin", ShieldCheck]];
+  const all = [...MAIN, ["Learn", "/learn", BookOpen], ["Walkthrough", "/walkthrough", BookOpen], ["Settings", "/settings", SettingsIcon], ["Admin", "/admin", ShieldCheck]];
   const crumb = all.find(([, to]) => to === location.pathname)?.[0] || "Workspace";
 
   // Floating menus never survive navigation (covers back/forward and
@@ -224,6 +225,9 @@ export default function Layout({ children }) {
                       <Link to="/settings" role="menuitem" onClick={() => setAccountOpen(false)} className="navlink flex items-center gap-2 px-2.5 py-2">
                         <SettingsIcon size={14} aria-hidden="true" /> Settings
                       </Link>
+                      <Link to="/learn" role="menuitem" onClick={() => setAccountOpen(false)} className="navlink flex items-center gap-2 px-2.5 py-2">
+                        <BookOpen size={14} aria-hidden="true" /> Learn
+                      </Link>
                       <p className="eyebrow px-2.5 pb-1 pt-2">Theme</p>
                       <div className="flex gap-1 px-2.5 pb-1.5" role="radiogroup" aria-label="Theme">
                         {[["paper", "Paper"], ["carbon", "Carbon"]].map(([v, l]) => (
@@ -280,6 +284,7 @@ export default function Layout({ children }) {
                 <NavGroup
                   label="Account"
                   items={[
+                    ["Learn", "/learn", BookOpen],
                     ["Settings", "/settings", SettingsIcon],
                     ...(isAdmin ? [["Admin", "/admin", ShieldCheck]] : []),
                   ]}
@@ -296,6 +301,7 @@ export default function Layout({ children }) {
 
       <main className="mx-auto max-w-6xl px-3.5 py-5 sm:px-5">
         <p className="eyebrow mb-1" aria-label="Breadcrumb">Pilot / {crumb}</p>
+        <Tour />
         {children}
       </main>
       <footer className="mx-auto max-w-6xl px-5 pb-8 text-[11px]" style={{ color: "var(--muted)" }}>

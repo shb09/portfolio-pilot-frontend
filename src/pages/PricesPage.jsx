@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { api, apiError } from "../api/client";
+import FinancialTermHelp from "../components/FinancialTermHelp";
 
 /** CSV price import: date,symbol,close rows with per-row error reporting. */
 export default function PricesPage() {
@@ -54,7 +55,8 @@ export default function PricesPage() {
       <h1 className="display mt-1 text-[1.55rem]">Price history</h1>
       <p className="mt-1 max-w-xl text-[13px]" style={{ color: "var(--muted)" }}>
         Import daily closes as CSV (<code>date,symbol,close</code> — ISO dates, positive prices).
-        Duplicates are skipped, bad rows are reported with line numbers. Data is never fabricated.
+        Duplicates are skipped, bad rows are reported with line numbers. Data is never fabricated.{" "}
+        <FinancialTermHelp termId="csv-import" context={symbols.length === 0 ? "No symbols tracked yet — your first import creates them." : `Currently tracking ${symbols.length} symbol(s): ${symbols.slice(0, 8).join(", ")}${symbols.length > 8 ? "…" : ""}.`} />
       </p>
 
       <form onSubmit={upload} className="solid card mt-4 flex flex-wrap items-center gap-2.5 p-4">
