@@ -111,7 +111,7 @@ export default function Tour() {
   // Step 1 — pick a level.
   if (!pref?.level) {
     return (
-      <div className="tint mb-4 rounded-[0.9rem] p-4" role="region" aria-label="Learn as you explore">
+      <div className="tint glass-panel mb-4 rounded-[0.9rem] p-4" role="region" aria-label="Learn as you explore">
         <div className="flex flex-wrap items-center gap-2.5">
           <span className="icon-tile" aria-hidden="true"><BookOpen size={17} /></span>
           <div className="min-w-0 flex-1">
@@ -140,7 +140,7 @@ export default function Tour() {
   const last = step >= steps.length - 1;
 
   return (
-    <div className="tint mb-4 rounded-[0.9rem] p-4" role="region" aria-label={`Introduction, step ${step + 1} of ${steps.length}`}>
+    <div className="tint glass-panel mb-4 rounded-[0.9rem] p-4" role="region" aria-label={`Introduction, step ${step + 1} of ${steps.length}`}>
       <p className="eyebrow">LEARN AS YOU EXPLORE · {step + 1} / {steps.length}</p>
       <h2 className="mt-1 text-[15px] font-extrabold tracking-tight">{current.title}</h2>
       <p className="mt-1 max-w-xl text-[13px] leading-relaxed">{current.body}</p>

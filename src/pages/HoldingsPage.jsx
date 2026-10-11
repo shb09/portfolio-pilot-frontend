@@ -91,26 +91,26 @@ export default function HoldingsPage() {
             </Link>
           </div>
           <div className="mt-2 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-            <div className="solid card p-4">
+            <div className="solid card glass-metric p-4">
               <p className="display text-[1.5rem] tabular-nums">{fmt(report.valuation.totalValue)}</p>
               <p className="eyebrow mt-1" style={{ fontSize: "0.6rem" }}>Total value <FinancialTermHelp termId="holding" context={`Quantity × latest price per holding, summed. ${report.valuation.positions.length} position(s) valued.`} /></p>
             </div>
-            <div className="solid card p-4">
+            <div className="solid card glass-metric p-4">
               <p className="display text-[1.5rem] tabular-nums">{fmtPct(r?.cumulativeReturn)}</p>
               <p className="eyebrow mt-1" style={{ fontSize: "0.6rem" }}>Cumulative <FinancialTermHelp termId="cumulative-return" context={r?.cumulativeReturn == null ? (r?.reason || "Not enough valued dates yet — import prices for every holding.") : `Last ÷ first − 1 over ${r.startDate} → ${r.endDate} (${r.observations} observations).`} /></p>
             </div>
-            <div className="solid card p-4">
+            <div className="solid card glass-metric p-4">
               <p className="display text-[1.5rem] tabular-nums">{fmtPct(r?.annualizedVolatility)}</p>
               <p className="eyebrow mt-1" style={{ fontSize: "0.6rem" }}>Volatility <FinancialTermHelp termId="volatility" context={r?.annualizedVolatility == null ? (r?.reason || "Needs at least 2 return observations.") : `Sample deviation of period returns × √252 over ${r.observations} observations.`} /></p>
             </div>
-            <div className="solid card p-4">
+            <div className="solid card glass-metric p-4">
               <p className="display text-[1.5rem] tabular-nums">{fmt(report.allocation.hhi, 4)}</p>
               <p className="eyebrow mt-1" style={{ fontSize: "0.6rem" }}>HHI · {report.allocation.hhiBand} <FinancialTermHelp termId="hhi" context={report.allocation.hhi == null ? "No valued positions yet — HHI needs position weights." : `Squared value-weights summed: ${weights.map(([s, w]) => `${s} ${Math.round(w * 100)}%`).join(" · ")}. Band “${report.allocation.hhiBand}” is descriptive, not advice.`} /></p>
             </div>
           </div>
 
           {weights.length > 0 && (
-            <div className="solid card mt-2.5 p-4">
+            <div className="solid card glass-panel mt-2.5 p-4">
               <h3 className="text-sm font-extrabold">Allocation <FinancialTermHelp termId="portfolio" context="Each holding's share of total value at latest prices." /></h3>
               <ul className="mt-2 space-y-1.5">
                 {weights.map(([symbol, w]) => (

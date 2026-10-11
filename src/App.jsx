@@ -16,8 +16,6 @@ import Forgot from "./pages/Forgot";
 import Reset from "./pages/Reset";
 import OAuthCallback from "./pages/OAuthCallback";
 import ProfilePage from "./pages/ProfilePage";
-import Preview from "./pages/Preview";
-import AnalyticsPage from "./pages/AnalyticsPage";
 import Settings from "./pages/Settings";
 import AdminDashboard from "./pages/AdminDashboard";
 import PublicPortfolio from "./pages/PublicPortfolio";
@@ -84,8 +82,8 @@ export default function App() {
       <Route path="/experience" element={crud("experience")} />
       <Route path="/certifications" element={crud("certifications")} />
       <Route path="/achievements" element={crud("achievements")} />
-      <Route path="/preview" element={<Guard><Preview /></Guard>} />
-      <Route path="/analytics" element={<Guard><AnalyticsPage /></Guard>} />
+      <Route path="/preview" element={<Navigate to="/portfolios" replace />} />
+      <Route path="/analytics" element={<Navigate to="/analysis" replace />} />
       <Route path="/settings" element={<Guard><Settings /></Guard>} />
       <Route path="/portfolios" element={<Guard><PortfoliosPage /></Guard>} />
       <Route path="/portfolios/:id" element={<Guard><HoldingsPage /></Guard>} />

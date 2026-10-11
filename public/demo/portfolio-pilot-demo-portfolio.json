@@ -1,0 +1,25 @@
+{
+  "_note": "Documented demo configuration only. Portfolio Pilot has no JSON importer — import the CSV files through Prices → Import CSV. All prices below are deterministic simulated data, not live market quotes.",
+  "demoPortfolioName": "Interactive Demo",
+  "benchmarkSymbol": "NIFTY50",
+  "holdings": [
+    { "symbol": "ALPHA", "assetCategory": "Equity", "quantity": 10 },
+    { "symbol": "BETA", "assetCategory": "Equity", "quantity": 20 },
+    { "symbol": "GAMMA", "assetCategory": "Bond", "quantity": 5 }
+  ],
+  "scenarios": [
+    {
+      "id": "steady-growth-2024",
+      "csv": "portfolio-pilot-demo-prices.csv",
+      "label": "Steady growth (2024)",
+      "story": "ALPHA climbs with wobbles, BETA trends up, GAMMA drifts higher, NIFTY50 gains 7%. With 10/20/5 units the portfolio ends near 3490 from 3000 — about +16.3% cumulative."
+    },
+    {
+      "id": "dip-and-recovery-2023",
+      "csv": "portfolio-pilot-demo-prices-alternative.csv",
+      "label": "Dip and recovery (2023)",
+      "story": "ALPHA falls to 62 then recovers to 95, BETA slides all year, GAMMA climbs steadily. With 10/20/5 units the portfolio ends near 2935 from 2950 — about -0.5% cumulative with a visible mid-year drawdown."
+    }
+  ],
+  "guide": "../../docs/demo-data-guide.md"
+}

@@ -11,7 +11,10 @@ import { api, apiError } from "../api/client";
  */
 export const DEMO_PORTFOLIO_NAME = "Interactive Demo";
 export const DEMO_BENCHMARK = "NIFTY50";
-export const DEMO_CSV_URL = "/demo/portfolio-pilot-demo-prices.csv";
+export const DEMO_SCENARIOS = [
+  { id: "steady-growth-2024", label: "Steady growth (2024)", url: "/demo/portfolio-pilot-demo-prices.csv", file: "portfolio-pilot-demo-prices.csv" },
+  { id: "dip-and-recovery-2023", label: "Dip and recovery (2023)", url: "/demo/portfolio-pilot-demo-prices-alternative.csv", file: "portfolio-pilot-demo-prices-alternative.csv" },
+];
 const DEMO_HOLDINGS = [
   { symbol: "ALPHA", assetCategory: "Equity", quantity: 10 },
   { symbol: "BETA", assetCategory: "Equity", quantity: 20 },
@@ -35,7 +38,9 @@ export default function DemoSetup({ compact = false }) {
   const [notes, setNotes] = useState({}); // step -> detail string
   const [failedStep, setFailedStep] = useState(null);
   const [demoId, setDemoId] = useState(null);
+  const [scenarioId, setScenarioId] = useState(DEMO_SCENARIOS[0].id);
   const currentStep = useRef("portfolio");
+  const scenario = DEMO_SCENARIOS.find((s) => s.id === scenarioId) || DEMO_SCENARIOS[0];
 
   const fail = (step, message, patch) => {
     setStatus((s) => ({ ...s, [step]: "failed" }));
@@ -115,16 +120,16 @@ export default function DemoSetup({ compact = false }) {
         setStatus((s) => ({ ...s, holdings: "done" }));
       }
 
-      // 4. Prices: import the bundled CSV through the real importer.
+      // 4. Prices: import the selected bundled CSV through the real importer.
       // Re-imports skip existing rows as duplicates — no double-counting.
       if (startAt <= 3) {
         currentStep.current = "prices";
         setStatus((s) => ({ ...s, prices: "active" }));
-        const csv = await fetch(DEMO_CSV_URL);
+        const csv = await fetch(scenario.url);
         if (!csv.ok) throw new Error("Could not read the bundled demo CSV.");
         const blob = await csv.blob();
         const form = new FormData();
-        form.append("file", new File([blob], "portfolio-pilot-demo-prices.csv", { type: "text/csv" }));
+        form.append("file", new File([blob], scenario.file, { type: "text/csv" }));
         const { data: result } = await api.post("/prices/import", form, {
           headers: { "Content-Type": "multipart/form-data" },
         });
@@ -159,7 +164,7 @@ export default function DemoSetup({ compact = false }) {
   const done = STEPS.every((s) => status[s] === "done");
 
   return (
-    <div className="tint rounded-[0.9rem] p-4">
+    <div className="tint glass-panel rounded-[0.9rem] p-4">
       <div className="flex flex-wrap items-center gap-2.5">
         <span className="icon-tile" aria-hidden="true"><Sparkles size={17} /></span>
         <div className="min-w-0 flex-1">
@@ -178,6 +183,13 @@ export default function DemoSetup({ compact = false }) {
             <Play size={15} /> {running ? "Setting up…" : failedStep ? "Retry demo setup" : "Load Interactive Demo"}
           </button>
         )}
+      </div>
+      <div className="mt-2.5 flex flex-wrap items-center gap-2">
+        <label htmlFor="demo-scenario" className="text-xs font-bold" style={{ color: "var(--muted)" }}>Scenario</label>
+        <select id="demo-scenario" className="input w-auto py-1.5 text-[13px]" value={scenarioId}
+          onChange={(e) => setScenarioId(e.target.value)} disabled={running}>
+          {DEMO_SCENARIOS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+        </select>
       </div>
 
       {(running || failedStep || done) && (

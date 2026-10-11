@@ -15,6 +15,7 @@ const MAIN = [
   ["Overview", "/portfolios", LayoutDashboard],
   ["Prices", "/prices", LineChart],
   ["Analysis", "/analysis", TrendingUp],
+  ["Learn", "/learn", BookOpen],
 ];
 
 function BrandMark({ size = 28 }) {
