@@ -3,8 +3,8 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Award, BarChart3, Briefcase, ChevronDown, FolderKanban, GraduationCap,
-  Layers, LayoutDashboard, LogOut, Menu, Moon, Rocket,
-  Settings as SettingsIcon, ShieldCheck, Sun, Trophy, UserRound, X,
+  Layers, LayoutDashboard, LineChart, LogOut, Menu, Moon, PieChart, Rocket,
+  Settings as SettingsIcon, ShieldCheck, Sun, TrendingUp, Trophy, UserRound, X,
 } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import { useTheme } from "../theme/ThemeContext";
@@ -21,6 +21,9 @@ const MORE = [
   ["Education", "/education", GraduationCap],
   ["Certifications", "/certifications", Award],
   ["Achievements", "/achievements", Trophy],
+  ["Portfolios", "/portfolios", PieChart],
+  ["Prices", "/prices", LineChart],
+  ["Analysis", "/analysis", TrendingUp],
 ];
 
 const INSIGHTS = [["Preview & Publish", "/preview", Rocket]];

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowUpDown, Award, Briefcase, FolderKanban, GraduationCap, Layers,
-  Pencil, Plus, Search, Trash2, Trophy, X,
+  Pencil, PieChart, Plus, Search, Trash2, Trophy, Wallet, X,
 } from "lucide-react";
 import { api, apiError } from "../api/client";
 import Toast from "./Toast";
@@ -10,6 +10,8 @@ import Toast from "./Toast";
 const ICONS = {
   projects: FolderKanban,
   skills: Layers,
+  portfolios: PieChart,
+  holdings: Wallet,
   education: GraduationCap,
   experience: Briefcase,
   certifications: Award,
