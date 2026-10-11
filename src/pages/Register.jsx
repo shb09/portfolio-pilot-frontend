@@ -11,6 +11,7 @@ export default function Register() {
   const [form, setForm] = useState({ username: "", name: "", email: "", password: "" });
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [slowNote, setSlowNote] = useState(false);
   const [welcome, setWelcome] = useState(null);
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
@@ -19,12 +20,15 @@ export default function Register() {
     e.preventDefault();
     setBusy(true);
     setError("");
+    setSlowNote(false);
+    const wakeTimer = setTimeout(() => setSlowNote(true), 12000);
     try {
       const user = await register(form);
       setWelcome(user);
     } catch (err) {
       setError(apiError(err, "Registration failed"));
     } finally {
+      clearTimeout(wakeTimer);
       setBusy(false);
     }
   };
@@ -97,6 +101,11 @@ export default function Register() {
         <button type="submit" disabled={busy} className="btn-brand mt-5 w-full justify-center py-2.5 text-sm">
           {busy ? "Creating account…" : "Create account"}
         </button>
+        {busy && slowNote && (
+          <p className="mt-2 text-center text-[12px]" style={{ color: "var(--muted)" }}>
+            Still working — the free-tier server may be waking up. Please wait up to a minute.
+          </p>
+        )}
       </form>
     </AuthLayout>
   );

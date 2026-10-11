@@ -22,6 +22,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [slowNote, setSlowNote] = useState(false);
   const [googleOn, setGoogleOn] = useState(false);
 
   useEffect(() => {
@@ -35,12 +36,15 @@ export default function Login() {
     e.preventDefault();
     setBusy(true);
     setError("");
+    setSlowNote(false);
+    const wakeTimer = setTimeout(() => setSlowNote(true), 12000);
     try {
       const user = await login(identifier, password);
       navigate(user?.role === "ADMIN" ? "/admin" : "/portfolios");
     } catch (err) {
       setError(apiError(err, "Login failed"));
     } finally {
+      clearTimeout(wakeTimer);
       setBusy(false);
     }
   };
@@ -86,6 +90,11 @@ export default function Login() {
         <button type="submit" disabled={busy} className="btn-brand mt-5 w-full justify-center py-2.5 text-sm">
           {busy ? "Signing in…" : "Login"}
         </button>
+        {busy && slowNote && (
+          <p className="mt-2 text-center text-[12px]" style={{ color: "var(--muted)" }}>
+            Still working — the free-tier server may be waking up. Please wait up to a minute.
+          </p>
+        )}
         <p className="mt-3 text-center text-[13px]">
           <Link to="/forgot" className="font-semibold underline underline-offset-2" style={{ color: "var(--muted)" }}>Forgot password?</Link>
         </p>
