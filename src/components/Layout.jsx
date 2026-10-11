@@ -364,7 +364,7 @@ export default function Layout({ children }) {
         {children}
       </main>
       <footer className="mx-auto max-w-6xl px-5 pb-8 text-[11px]" style={{ color: "var(--muted)" }}>
-        PORTFOLIO PILOT — build your profile, track your progress, launch your career story.
+        PORTFOLIO PILOT — measure risk, track return, stay diversified.
       </footer>
     </div>
   );

@@ -34,9 +34,9 @@ export default function AuthLayout({ title, subtitle, children, footer }) {
         <p className="eyebrow" style={{ color: "var(--brand)" }}>Why pilots join</p>
         <ul className="space-y-5">
           {[
-            [Gauge, "Know your score", "Eight weighted sections graded 0–100 from your real data."],
-            [Rocket, "Publish in minutes", "Preview the exact page, claim your slug, share one link."],
-            [BarChart3, "See what lands", "Views and clicks counted event by event."],
+            [Gauge, "Know your risk", "Returns, volatility, drawdown, and Sharpe from your own data."],
+            [Rocket, "Import in minutes", "CSV price history with validation and duplicate handling."],
+            [BarChart3, "Beat a benchmark", "Aligned-window comparison with active return."],
           ].map(([Icon, t, d]) => (
             <li key={t} className="flex gap-3.5">
               <span className="icon-tile"><Icon size={18} /></span>
