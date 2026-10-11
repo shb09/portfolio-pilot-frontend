@@ -10,7 +10,7 @@ import { useAuth } from "../auth/AuthContext";
 import { useTheme } from "../theme/ThemeContext";
 
 const MAIN = [
-  ["Overview", "/dashboard", LayoutDashboard],
+  ["Overview", "/portfolios", LayoutDashboard],
   ["Profile", "/profile", UserRound],
   ["Projects", "/projects", FolderKanban],
   ["Experience", "/experience", Briefcase],

@@ -37,7 +37,7 @@ export default function Login() {
     setError("");
     try {
       const user = await login(identifier, password);
-      navigate(user?.role === "ADMIN" ? "/admin" : "/dashboard");
+      navigate(user?.role === "ADMIN" ? "/admin" : "/portfolios");
     } catch (err) {
       setError(apiError(err, "Login failed"));
     } finally {

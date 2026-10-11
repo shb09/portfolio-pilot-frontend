@@ -20,7 +20,7 @@ export default function OAuthCallback() {
       .then((res) => {
         localStorage.setItem("pp_token", res.data.token);
         localStorage.setItem("pp_user", JSON.stringify(res.data.user));
-        window.location.href = res.data.user?.role === "ADMIN" ? "/admin" : "/dashboard";
+        window.location.href = res.data.user?.role === "ADMIN" ? "/admin" : "/portfolios";
       })
       .catch((err) => setState({
         loading: false,

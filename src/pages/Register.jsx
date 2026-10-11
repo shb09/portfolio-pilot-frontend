@@ -42,10 +42,10 @@ export default function Register() {
             <p className="font-bold">Account created successfully.</p>
             <p className="mt-1" style={{ color: "var(--muted)" }}>
               Signed in as <strong style={{ color: "var(--ink)" }}>{welcome.username}</strong>.
-              Your portfolio starts empty — the dashboard will guide your first steps.
+              Your portfolio starts empty — the portfolios page will guide your first steps.
             </p>
-            <button onClick={() => navigate("/dashboard")} className="btn-brand mt-3 px-4 py-2 text-[13px]">
-              Continue to your dashboard →
+            <button onClick={() => navigate("/portfolios")} className="btn-brand mt-3 px-4 py-2 text-[13px]">
+              Continue to your portfolios →
             </button>
           </div>
         </div>
