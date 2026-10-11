@@ -2,31 +2,19 @@ import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  Award, BarChart3, Briefcase, ChevronDown, FolderKanban, GraduationCap,
-  Layers, LayoutDashboard, LineChart, LogOut, Menu, Moon, PieChart, Rocket,
-  Settings as SettingsIcon, ShieldCheck, Sun, TrendingUp, Trophy, UserRound, X,
+  ChevronDown, LayoutDashboard, LineChart, LogOut, Menu, Moon,
+  Settings as SettingsIcon, ShieldCheck, Sun, TrendingUp, X,
 } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import { useTheme } from "../theme/ThemeContext";
 
+/* Financial workspace navigation. Legacy career pages remain mounted as
+   routes for direct access, but are deliberately unlinked from this menu. */
 const MAIN = [
   ["Overview", "/portfolios", LayoutDashboard],
-  ["Profile", "/profile", UserRound],
-  ["Projects", "/projects", FolderKanban],
-  ["Experience", "/experience", Briefcase],
-];
-
-const MORE = [
-  ["Skills", "/skills", Layers],
-  ["Education", "/education", GraduationCap],
-  ["Certifications", "/certifications", Award],
-  ["Achievements", "/achievements", Trophy],
-  ["Portfolios", "/portfolios", PieChart],
   ["Prices", "/prices", LineChart],
   ["Analysis", "/analysis", TrendingUp],
 ];
-
-const INSIGHTS = [["Preview & Publish", "/preview", Rocket]];
 
 function BrandMark({ size = 28 }) {
   return (
@@ -84,7 +72,6 @@ export default function Layout({ children }) {
   const { theme, toggle, setTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
-  const [moreOpen, setMoreOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [navHidden, setNavHidden] = useState(false);
@@ -95,7 +82,6 @@ export default function Layout({ children }) {
   const menuButtonRef = useRef(null);
   const drawerRef = useRef(null);
   const headerRef = useRef(null);
-  const moreRef = useDismiss(() => setMoreOpen(false));
   const accountRef = useDismiss(() => setAccountOpen(false));
 
   const quit = () => {
@@ -103,14 +89,12 @@ export default function Layout({ children }) {
     navigate("/login");
   };
 
-  const all = [...MAIN, ...MORE, ...INSIGHTS, ["Analytics", "/analytics", BarChart3], ["Settings", "/settings", SettingsIcon], ["Admin", "/admin", ShieldCheck]];
+  const all = [...MAIN, ["Settings", "/settings", SettingsIcon], ["Admin", "/admin", ShieldCheck]];
   const crumb = all.find(([, to]) => to === location.pathname)?.[0] || "Workspace";
-  const moreActive = MORE.some(([, to]) => to === location.pathname);
 
   // Floating menus never survive navigation (covers back/forward and
   // programmatic route changes, not just in-menu link clicks).
   useEffect(() => {
-    setMoreOpen(false);
     setAccountOpen(false);
     setMobileOpen(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -147,7 +131,7 @@ export default function Layout({ children }) {
       requestAnimationFrame(() => {
         ticking = false;
         const y = window.scrollY;
-        const interacting = moreOpen || accountOpen || mobileOpen
+        const interacting = accountOpen || mobileOpen
           || (headerRef.current && headerRef.current.contains(document.activeElement));
         if (interacting || y <= 160) {
           if (lastHidden.current) {
@@ -171,7 +155,7 @@ export default function Layout({ children }) {
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [moreOpen, accountOpen, mobileOpen]);
+  }, [accountOpen, mobileOpen]);
 
   const mainLink = ([name, to, Icon]) => (
     <NavLink
@@ -189,58 +173,12 @@ export default function Layout({ children }) {
       {/* Compact top navigation */}
       <header ref={headerRef} className="sticky top-0 z-20 border-b-2" style={{ background: scrolled ? "color-mix(in srgb, var(--nav) 86%, transparent)" : "var(--nav)", backdropFilter: scrolled ? "blur(12px)" : "none", WebkitBackdropFilter: scrolled ? "blur(12px)" : "none", borderColor: "var(--line-strong)", transform: navHidden ? "translateY(-100%)" : "none", transition: "transform 0.22s ease, background 0.2s ease" }}>
         <div className="mx-auto flex max-w-6xl items-center gap-1.5 px-3.5 py-2 sm:px-5">
-          <Link to="/dashboard" className="mr-1 flex shrink-0 items-center gap-2">
+          <Link to="/portfolios" className="mr-1 flex shrink-0 items-center gap-2">
             <BrandMark />
             <span className="hidden text-sm font-extrabold tracking-tight min-[420px]:block">PORTFOLIO&nbsp;PILOT</span>
           </Link>
           <nav className="ml-2 hidden min-w-0 flex-1 items-center gap-0.5 overflow-x-auto lg:flex" aria-label="Primary">
             {MAIN.map(mainLink)}
-            <div className="relative" ref={moreRef}>
-              <button
-                onClick={() => setMoreOpen((o) => !o)}
-                aria-expanded={moreOpen}
-                aria-haspopup="true"
-                className={`navlink flex items-center gap-1 px-2.5 py-1.5${moreActive ? " active" : ""}`}
-              >
-                More <ChevronDown size={13} aria-hidden="true" />
-              </button>
-              <AnimatePresence>
-                {moreOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 4 }}
-                    transition={{ duration: 0.14 }}
-                    className="liquid-glass card absolute left-0 top-full z-30 mt-1.5 w-52 p-1.5"
-                    role="menu"
-                  >
-                    {MORE.map(([name, to, Icon]) => (
-                      <NavLink
-                        key={to}
-                        to={to}
-                        role="menuitem"
-                        onClick={() => setMoreOpen(false)}
-                        className={({ isActive }) => `navlink flex items-center gap-2 px-2.5 py-2${isActive ? " active" : ""}`}
-                      >
-                        <Icon size={14} aria-hidden="true" /> {name}
-                      </NavLink>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-            <NavLink
-              to="/analytics"
-              className={({ isActive }) => `navlink flex items-center gap-1.5 px-2.5 py-1.5${isActive ? " active" : ""}`}
-            >
-              <BarChart3 size={14} aria-hidden="true" /> Insights
-            </NavLink>
-            <NavLink
-              to="/preview"
-              className={({ isActive }) => `navlink flex items-center gap-1.5 px-2.5 py-1.5${isActive ? " active" : ""}`}
-            >
-              <Rocket size={14} aria-hidden="true" /> Preview & Publish
-            </NavLink>
             {isAdmin && (
               <NavLink
                 to="/admin"
@@ -339,14 +277,11 @@ export default function Layout({ children }) {
             >
               <div className="grid gap-0.5 px-3.5 py-3">
                 <NavGroup label="Workspace" items={MAIN} onGo={() => setMobileOpen(false)} />
-                <NavGroup label="More" items={MORE} onGo={() => setMobileOpen(false)} />
                 <NavGroup
-                  label="Insights"
+                  label="Account"
                   items={[
-                    ["Analytics", "/analytics", BarChart3],
-                    ...INSIGHTS,
-                    ...(isAdmin ? [["Admin", "/admin", ShieldCheck]] : []),
                     ["Settings", "/settings", SettingsIcon],
+                    ...(isAdmin ? [["Admin", "/admin", ShieldCheck]] : []),
                   ]}
                   onGo={() => setMobileOpen(false)}
                 />

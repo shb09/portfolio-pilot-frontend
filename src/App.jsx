@@ -15,7 +15,6 @@ import Verify from "./pages/Verify";
 import Forgot from "./pages/Forgot";
 import Reset from "./pages/Reset";
 import OAuthCallback from "./pages/OAuthCallback";
-import Dashboard from "./pages/Dashboard";
 import ProfilePage from "./pages/ProfilePage";
 import Preview from "./pages/Preview";
 import AnalyticsPage from "./pages/AnalyticsPage";
@@ -43,7 +42,7 @@ function AdminGuard({ children }) {
   const { user, ready, isAdmin } = useAuth();
   if (!ready) return <p className="p-8" style={{ color: "var(--muted)" }}>Loading…</p>;
   if (!user) return <Navigate to="/login" replace />;
-  if (!isAdmin) return <Navigate to="/dashboard" replace />;
+  if (!isAdmin) return <Navigate to="/portfolios" replace />;
   return (
     <Layout>
       <Aurora />
@@ -73,7 +72,7 @@ export default function App() {
       <Route path="/forgot" element={<Forgot />} />
       <Route path="/reset" element={<Reset />} />
       <Route path="/oauth/callback" element={<OAuthCallback />} />
-      <Route path="/dashboard" element={<Guard><Dashboard /></Guard>} />
+      <Route path="/dashboard" element={<Navigate to="/portfolios" replace />} />
       <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
       <Route path="/profile" element={<Guard><ProfilePage /></Guard>} />
       <Route path="/projects" element={crud("projects")} />
